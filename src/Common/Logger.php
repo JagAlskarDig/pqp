@@ -60,11 +60,6 @@ class Logger
     );
 
     /**
-     * @var int
-     */
-    protected $pid;
-
-    /**
      * @var self
      */
     protected static $logger;
@@ -85,7 +80,6 @@ class Logger
     {
         $this->logLevel = $logLevel;
         $this->logFileHandle = fopen($logFile, 'a+');
-        $this->pid = posix_getpid();
     }
 
     public function __destruct()
@@ -166,7 +160,7 @@ class Logger
                 $params[$key] = print_r($param, true);
             }
         }
-        $str = date('Y-m-d H:i:s') . ' [' . $typeStr . '] ' . $this->pid . ' ' . $caller . ': ' . implode($params) . PHP_EOL;
+        $str = date('Y-m-d H:i:s') . ' [' . $typeStr . '] ' . posix_getpid() . ' ' . $caller . ': ' . implode($params) . PHP_EOL;
 
         $this->write($str);
     }
