@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-require 'src/Loader.php';
+require __DIR__ . '/src/Loader.php';
 
 use PQP\Loader;
 
