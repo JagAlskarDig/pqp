@@ -114,12 +114,14 @@ final class Loader
      */
     protected function load($className)
     {
-        $className = strtr($className, '\\', $this::DS);
-
         if (isset($this->classMap[$className])) {
             require $this->classMap[$className];
+            unset($this->classMap[$className]);
+
+            return;
         }
 
+        $className = strtr($className, '\\', $this::DS);
         foreach ($this->vendors as $name => $path) {
             $nameLen = strlen($name);
 
