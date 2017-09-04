@@ -29,15 +29,17 @@ use Exception;
 
 final class Loader
 {
+    const DS = DIRECTORY_SEPARATOR;
+
     /**
      * @var self
      */
     protected static $instance;
 
     /**
-     * @var string
+     * @var string[] array
      */
-    protected $path;
+    protected $vendors = array('PQP/' => __DIR__);
 
     /**
      * @return self
@@ -60,8 +62,17 @@ final class Loader
             throw new ErrorException($msg, $code, $code, $file, $line);
         }, error_reporting());
 
-        $this->path = __DIR__;
         spl_autoload_register(array($this, 'load'));
+    }
+
+    /**
+     * @param string $name
+     * @param string $path
+     */
+    public static function registerVendor($name, $path)
+    {
+        $name = strtr(trim($name, " \t\n\r\0\x0B\\"), '\\', self::DS) . self::DS;
+        self::init()->vendors[$name] = realpath($path);
     }
 
     /**
@@ -69,9 +80,15 @@ final class Loader
      */
     protected function load($className)
     {
-        $className = strtr($className, '\\', DIRECTORY_SEPARATOR);
-        if (0 === strncmp('PQP/', $className, 4)) {
-            require $this->path . substr($className, 3) . '.php';
+        $className = strtr($className, '\\', $this::DS);
+        foreach ($this->vendors as $name => $path) {
+            $nameLen = strlen($name);
+
+            if (0 === strncmp($name, $className, $nameLen)) {
+                require $path . substr($className, $nameLen - 1) . '.php';
+
+                return;
+            }
         }
     }
 
