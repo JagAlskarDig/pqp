@@ -42,6 +42,16 @@ final class Loader
     protected $vendors = array('PQP/' => __DIR__);
 
     /**
+     * @var array
+     */
+    protected $classMap = array();
+
+    /**
+     * @var array
+     */
+    protected $staticFiles = array();
+
+    /**
      * @return self
      */
     public static function init()
@@ -66,13 +76,37 @@ final class Loader
     }
 
     /**
-     * @param string $name
-     * @param string $path
+     * @param string $vendorName
+     * @param string $baseDir
      */
-    public static function registerVendor($name, $path)
+    public static function registerPsr4($vendorName, $baseDir)
     {
-        $name = strtr(trim($name, " \t\n\r\0\x0B\\"), '\\', self::DS) . self::DS;
-        self::init()->vendors[$name] = realpath($path);
+        $vendorName = strtr(trim($vendorName, " \t\n\r\0\x0B\\"), '\\', self::DS) . self::DS;
+        self::init()->vendors[$vendorName] = realpath($baseDir);
+    }
+
+    /**
+     * @param string $className
+     * @param string $filePath
+     */
+    public static function mapClass($className, $filePath)
+    {
+        self::init()->classMap[trim($className)] = realpath($filePath);
+    }
+
+    /**
+     * @param string $filePath
+     */
+    public static function loadStatic($filePath)
+    {
+        $filePath = realpath($filePath);
+
+        $instance = self::init();
+        if (!isset($instance->staticFiles[$filePath])) {
+            $instance->staticFiles[$filePath] = true;
+
+            require $filePath;
+        }
     }
 
     /**
@@ -81,6 +115,11 @@ final class Loader
     protected function load($className)
     {
         $className = strtr($className, '\\', $this::DS);
+
+        if (isset($this->classMap[$className])) {
+            require $this->classMap[$className];
+        }
+
         foreach ($this->vendors as $name => $path) {
             $nameLen = strlen($name);
 
