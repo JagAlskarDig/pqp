@@ -76,13 +76,13 @@ final class Loader
     }
 
     /**
-     * @param string $vendorName
+     * @param string $namespace
      * @param string $baseDir
      */
-    public static function registerPsr4($vendorName, $baseDir)
+    public static function registerPsr4($namespace, $baseDir)
     {
-        $vendorName = strtr(trim($vendorName, " \t\n\r\0\x0B\\"), '\\', self::DS) . self::DS;
-        self::init()->vendors[$vendorName] = realpath($baseDir);
+        $namespace = strtr(trim($namespace, " \t\n\r\0\x0B\\"), '\\', self::DS) . self::DS;
+        self::init()->vendors[$namespace] = realpath($baseDir);
     }
 
     /**
@@ -92,6 +92,15 @@ final class Loader
     public static function mapClass($className, $filePath)
     {
         self::init()->classMap[trim($className)] = realpath($filePath);
+    }
+
+    /**
+     * @param array $classes
+     */
+    public static function mapClasses(array $classes)
+    {
+        $classMap = self::init()->classMap;
+        self::init()->classMap = $classes + $classMap;
     }
 
     /**
