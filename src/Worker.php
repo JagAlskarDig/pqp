@@ -95,8 +95,6 @@ class Worker extends Process
 
         $count = 0;
         while ($this->running) {
-            $this->dispatchSignals();
-
             try {
                 $value = $this->queue->dequeue(1);
 
@@ -109,8 +107,9 @@ class Worker extends Process
                 }
             } catch (Exception $e) {
                 Logger::error($e->getMessage(), ' (', $e->getFile(), ':', $e->getLine(), ')');
-                continue;
             }
+
+            $this->dispatchSignals();
         }
     }
 
