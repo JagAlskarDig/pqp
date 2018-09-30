@@ -8,7 +8,7 @@
         "queue workers",
         "redis"
     ],
-    "homepage": "http://github.com/pengzhile/PQP",
+    "homepage": "http://github.com/pengzhile/pqp",
     "require": {
         "php": ">=5.3.6",
         "ext-pcntl": "*",
