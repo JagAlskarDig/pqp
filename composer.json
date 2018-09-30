@@ -4,6 +4,8 @@
     "keywords": [
         "php",
         "queue processor",
+        "queue listener",
+        "queue workers",
         "redis"
     ],
     "homepage": "http://github.com/pengzhile/PQP",
