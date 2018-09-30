@@ -12,7 +12,9 @@
     "require": {
         "php": ">=5.3.6",
         "ext-pcntl": "*",
-        "ext-posix": "*",
+        "ext-posix": "*"
+    },
+    "suggest": {
         "ext-redis": "*"
     },
     "license": "MIT",
