@@ -9,6 +9,11 @@
 * linux/unix operating system
 * use php cli
 
+### Installation
+
+* For native: download and unzip
+* For composer: `composer require pengzhile/pqp`
+
 ### Sample
 
 ```php
