@@ -97,9 +97,16 @@ class Listener extends Process
     /**
      * Listener constructor.
      * @param string $configFile
+     * @throws Exception
      */
     public function __construct($configFile = null)
     {
+        $this->checkEnvironment();
+
+        set_error_handler(function ($code, $msg, $file, $line) {
+            throw new ErrorException($msg, $code, $code, $file, $line);
+        }, error_reporting());
+
         $log = 'php://stdout';
         $this->stoppingScreen = str_repeat("\n<<<<<<<< Stopping... For data safe reason, please wait! >>>>>>>>", 80);
 
@@ -313,6 +320,28 @@ class Listener extends Process
             cli_set_process_title($this->config['name'] . ': ' . ($master ? 'listener' : 'worker') . ' process');
         } catch (ErrorException $e) {
             Logger::warning('Set process filed: ', $e->getMessage());
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function checkEnvironment()
+    {
+        if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50306) {
+            throw new Exception('PHP version must >= 5.3.6.');
+        }
+
+        if ('cli' !== PHP_SAPI) {
+            throw new Exception('PQP must run in cli mode.');
+        }
+
+        if (!extension_loaded('pcntl')) {
+            throw new Exception('Miss pcntl php extension.');
+        }
+
+        if (!extension_loaded('posix')) {
+            throw new Exception('Miss posix php extension.');
         }
     }
 }

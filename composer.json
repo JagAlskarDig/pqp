@@ -1,0 +1,34 @@
+{
+    "name": "pengzhile/PQP",
+    "description": "A high performance multi-process queue listener.",
+    "keywords": [
+        "php",
+        "queue processor",
+        "redis"
+    ],
+    "homepage": "http://github.com/pengzhile/PQP",
+    "require": {
+        "php": ">=5.3.6",
+        "ext-pcntl": "*",
+        "ext-posix": "*",
+        "ext-redis": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "pengzhile",
+            "email": "pengzhile@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "PQP\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    }
+}

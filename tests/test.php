@@ -1,20 +1,6 @@
-# A high performance multi-process queue listener
-
-### Requirement
-
-* php >= 5.3.6
-* pcntl php extension
-* posix php extension
-* redis php extension (if you want to use the RedisQueue)
-* linux/unix operating system
-* use php cli
-
-### Sample
-
-```php
 <?php
-//require '/path/to/PQP/autoload.php';    // native autoloader
-require '/path/to/vendor/autoload.php';    // composer autoloader
+require '../vendor/autoload.php';   // composer
+//require '../autoload.php';    // native
 
 use PQP\Contracts\Observer;
 use PQP\Contracts\Queue;
@@ -47,4 +33,3 @@ $listener->listen(new RedisQueue(array('queueKey1', 'queueKey2'), '127.0.0.1'));
 // send SIGHUP(kill -1 <listener pid>) to listener process will restart all workers.
 // send SIGTERM(kill <listener pid>) to listener process will stop PQP.
 // send SIGINT(Ctrl+C or kill -2 <listener pid>) to listener process will stop PQP.
-```

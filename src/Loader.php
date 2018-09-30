@@ -24,9 +24,6 @@
 
 namespace PQP;
 
-use ErrorException;
-use Exception;
-
 final class Loader
 {
     const DS = DIRECTORY_SEPARATOR;
@@ -66,12 +63,6 @@ final class Loader
      */
     public function __construct()
     {
-        $this->checkEnvironment();
-
-        set_error_handler(function ($code, $msg, $file, $line) {
-            throw new ErrorException($msg, $code, $code, $file, $line);
-        }, error_reporting());
-
         spl_autoload_register(array($this, 'load'));
     }
 
@@ -139,28 +130,6 @@ final class Loader
 
                 return;
             }
-        }
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function checkEnvironment()
-    {
-        if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50306) {
-            throw new Exception('PHP version must >= 5.3.6.');
-        }
-
-        if ('cli' !== PHP_SAPI) {
-            throw new Exception('PQP must run in cli mode.');
-        }
-
-        if (!extension_loaded('pcntl')) {
-            throw new Exception('Miss pcntl php extension.');
-        }
-
-        if (!extension_loaded('posix')) {
-            throw new Exception('Miss posix php extension.');
         }
     }
 }
