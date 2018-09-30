@@ -1,5 +1,5 @@
 {
-    "name": "pengzhile/PQP",
+    "name": "pengzhile/pqp",
     "description": "A high performance multi-process queue listener.",
     "keywords": [
         "php",
