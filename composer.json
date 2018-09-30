@@ -6,7 +6,8 @@
         "queue processor",
         "queue listener",
         "queue workers",
-        "redis"
+        "queue monitor",
+        "redis queue"
     ],
     "homepage": "http://github.com/pengzhile/pqp",
     "require": {
