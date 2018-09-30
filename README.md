@@ -1,4 +1,4 @@
-# A high performance multi-process queue listener
+# PQP: A high performance multi-process queue listener
 
 ### Requirement
 
