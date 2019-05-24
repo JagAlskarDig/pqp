@@ -242,18 +242,18 @@ class Listener extends Process
      */
     protected function startWorker($id)
     {
-        $worker = new Worker($id, $this->pid, $this->queue, $this->config['workerRequestNum']);
-        foreach ($this->observers as $observer) {
-            $worker->attach($observer);
-        }
-
         switch ($pid = pcntl_fork()) {
             case 0:
                 $this->restoreSignals();
                 $this->setProcessTitle(false);
 
-                posix_setuid($this->workerUserId);
-                posix_setgid($this->workerGroupId);
+                $this->workerUserId && posix_setuid($this->workerUserId);
+                $this->workerGroupId && posix_setgid($this->workerGroupId);
+
+                $worker = new Worker($id, $this->pid, $this->queue, $this->config['workerRequestNum']);
+                foreach ($this->observers as $observer) {
+                    $worker->attach($observer);
+                }
 
                 $worker->run();
                 exit;
@@ -262,7 +262,7 @@ class Listener extends Process
                 exit(-1);
             default:
                 Logger::debug('Worker start: ', $pid);
-                $this->workers[$pid] = array($id, $worker);
+                $this->workers[$pid] = $id;
                 break;
         }
     }
@@ -281,7 +281,7 @@ class Listener extends Process
     {
         $idSet = array();
         while (0 < $pid = pcntl_wait($status, WNOHANG | WUNTRACED)) {
-            $idSet[] = current($this->workers[$pid]);
+            $idSet[] = $this->workers[$pid];
             unset($this->workers[$pid]);
         }
 
@@ -292,9 +292,8 @@ class Listener extends Process
 
     protected function setWorkerUser($userName)
     {
-        $userInfo = posix_getpwnam($userName);
-        if (false === $userInfo) {
-            throw new Exception('System user: ' . $userName . ' not found!');
+        if (false === $userInfo = posix_getpwnam($userName)) {
+            return;
         }
 
         $this->workerUserId = $userInfo['uid'];
@@ -302,9 +301,8 @@ class Listener extends Process
 
     protected function setWorkerGroup($groupName)
     {
-        $groupInfo = posix_getgrnam($groupName);
-        if (false === $groupInfo) {
-            throw new Exception('System group: ' . $groupName . ' not found!');
+        if (false === $groupInfo = posix_getgrnam($groupName)) {
+            return;
         }
 
         $this->workerGroupId = $groupInfo['gid'];
