@@ -272,7 +272,7 @@ class Listener extends Process
      */
     protected function stopWorkers($signal)
     {
-        foreach ($this->workers as $pid => $_) {
+        foreach (array_keys($this->workers) as $pid) {
             posix_kill($pid, $signal);
         }
     }
